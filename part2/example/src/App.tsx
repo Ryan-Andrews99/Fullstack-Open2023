@@ -1,23 +1,19 @@
-interface Note {
-      key: number,
-      content: string, 
-      important?: boolean
-    }
+import Notes from "./Components/Notes"
+import { INote } from "./Components/Notes"
 
-interface Notes{
-  notes: Note[]
+
+interface INotes {
+  notes: INote[]
 }
 
+const App = ({notes}: INotes) => {
 
-const Note = (({content, key}: Note) => <li key = {key}>{content}</li>)
-
-const App = ({ notes }: Notes) => {
   
   return (
     <div>
       <h1>Notes:</h1>
       <ul>
-        {notes.map(note => <Note content = {note.content} id = {note.id}></Note>)}
+        {notes.map(note => <Notes key = {note.key} content = {note.content} important = {note.important} />)}
       </ul>
     </div>
     )

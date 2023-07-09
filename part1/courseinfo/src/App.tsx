@@ -2,13 +2,23 @@ interface Header {
   course: string
 }
 
-interface Total {
+interface ITotal {
   total: number
 }
 
 interface Contents { 
   part: string, 
   exercise : number
+}
+
+interface ICourse {
+  key: number
+  name: string
+  parts: {
+    name: string
+    exercises: number
+    id: number
+  }[]
 }
 
 
@@ -20,63 +30,62 @@ const Header = (header: Header) => {
     )
 }
 
-const Total = (props : Total) => {
+const Total = (props : ITotal) => {
   return (
     <>
-    <p>The total number of exercises are {props.total}</p>
+    <p><b>The total number of exercises are {props.total}</b></p>
     </>
   )
 }
 
-const Content = (props: Contents[] ) => {
+const Content = (props: Contents ) => {
   return (
-  <div> 
     <p>
-      {props[0].part}: {props[0].exercise}
+      {props.part}: {props.exercise}
     </p>
-    <p>
-      {props[1].part}: {props[1].exercise}
-    </p>
-    <p>
-      {props[2].part}: {props[2].exercise}
-    </p>
-  </div>
-   
+  )
+}
+
+
+const Course = ({name, parts}: ICourse) => {
+  return(
+  <div>
+    <Header course={name}></Header>
+    <ul>
+      {parts.map( part => <Content key={part.id} part={part.name} exercise = {part.exercises}></Content>)}
+    </ul>
+    <Total total={parts.reduce((acc: number, part) => { 
+        acc += part.exercises
+        return acc
+    }, 0)}></Total>
+    </div>
   )
 }
 
 const App = () => {
-  const course = 'Half Stack applicaiton development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
+  const course: ICourse = {
+    key: 1,
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10,
+        id: 1
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7,
+        id: 2
+      },
+      {
+        name: 'State of a component',
+        exercises: 14,
+        id: 3
+      }
+    ]
+  }
 
-  const contents: Contents[] = [
-    {
-      part: part1, 
-      exercise:exercises1 
-    },
-    {
-      part: part2, 
-      exercise:exercises2 
-    },
-    {
-      part: part3, 
-      exercise:exercises3 
-    },
-  ]
+  return (<Course key = {course.key} name = {course.name} parts = {course.parts} ></Course>)
+}
 
-
-  return (
-    <div>
-      <Header course= {course}></Header>
-      <Content {...contents}></Content>
-      <Total total={exercises1 + exercises2 + exercises3}></Total>
-    </div>
-  )
-   }
-
-export default App;
+export default App
